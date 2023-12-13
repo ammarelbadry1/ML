@@ -9,7 +9,7 @@ import os
 current_directory = os.getcwd()
 
 # Construct the file path using os.path.join
-file_path = os.path.join(current_directory, "ML", 'Battery_RUL.csv')
+file_path = os.path.join(current_directory, 'Battery_RUL.csv')
 
 # Load the dataset
 dataset = pd.read_csv(file_path)
