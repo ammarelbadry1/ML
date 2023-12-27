@@ -45,6 +45,6 @@ feature_to_plot1 = "Max. Voltage Dischar. (V)"
 plt.scatter(X_test[feature_to_plot1], y_test, label="Actual target")
 plt.scatter(X_test[feature_to_plot1], y_pred, label="Predicted target")
 plt.xlabel(feature_to_plot1)
-plt.ylabel("target")
+plt.ylabel("RUL")
 plt.legend()
 plt.show()
