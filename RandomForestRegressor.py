@@ -4,13 +4,12 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score
-from sklearn.tree import plot_tree
 
 # Reading the dataset
 df = pd.read_csv('Battery_RUL.csv')
 
 # Preprocessing
-X = df.drop("RUL", axis=1)
+X = df.drop("RUL", axis=1).drop("Cycle_Index", axis=1)
 y = df["RUL"]
 
 ## Split the data
@@ -18,7 +17,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_
 
 # Train the model
 model = RandomForestRegressor(n_estimators=100, random_state=42, oob_score=True)
-# model = RandomForestRegressor(n_estimators=200, max_depth=10, min_samples_split=2, min_samples_leaf=1, max_features='sqrt', random_state=42, oob_score=True)
 model.fit(X_train, y_train)
 
 
@@ -44,9 +42,9 @@ for feature in range(X.shape[1]):
 
 
 # Visualizing Predictions VS Actual Values
-X_test = X_test.iloc[:, 0:1].values
-plt.scatter(X_test, y_test, color='blue')
-plt.plot(X_test, predictions, color='red')
+plt.plot(y_test, y_test, color='blue')
+plt.scatter(y_test, predictions, color='red')
+plt.title("Visualizing Predictions VS Actual Values")
 plt.xlabel('True Values')
 plt.ylabel('Predictions')
 plt.show()
@@ -54,7 +52,8 @@ plt.show()
 
 # Visualizing Error Distribution
 errors = y_test - predictions
-plt.hist(errors, bins=200)
+plt.hist(errors, bins=100)
+plt.title("Visualizing Error Distribution")
 plt.xlabel('Error')
 plt.ylabel('Count')
 plt.show()
