@@ -32,7 +32,6 @@ X = sc_X.fit_transform(X)
 y = sc_y.fit_transform(y.reshape(-1, 1)).ravel()
 
 # SVR model
-# SVR model
 regressor = SVR(kernel='rbf')
 
 # Fit the model
@@ -44,9 +43,10 @@ y_pred_orig = regressor.predict(X)
 # Calculate R^2 score
 r2 = r2_score(y, y_pred_orig)
 
+print(f'Accuracy: {r2 * 100:.2f}%')
 
 # Predictions using entire scaled feature set
-X_pred = np.linspace(-2, 2, 1000).reshape(-1, len(features))  # Change -2 and 2 based on your data range
+X_pred = np.linspace(-2, 2, 1000).reshape(-1, len(features))
 y_pred = regressor.predict(X_pred)
 y_pred = sc_y.inverse_transform(y_pred.reshape(-1, 1))
 
@@ -58,9 +58,9 @@ y_for_plot = sc_y.inverse_transform(y.reshape(-1, 1)).ravel()
 # Plotting
 plt.scatter(X_for_plot[:, 0], y_for_plot, color='red', label='Data')
 plt.plot(sc_X.inverse_transform(X_pred)[:, 0], y_pred, color='blue', label='SVR model')
-plt.title('Battery Remaining Useful Life (RUL)')
-plt.xlabel('Cycle_Index')  # Change this label based on the feature you're plotting against RUL
-plt.ylabel('RUL')
+plt.title('Visulization of predictions & Actual values')
+plt.xlabel('Acual values')
+plt.ylabel('Predictions')
 plt.legend()
 plt.show()
 
@@ -73,4 +73,4 @@ plt.xlabel('Prediction Error')
 plt.ylabel('Count')
 plt.title('Distribution of Prediction Errors')
 plt.show()
-print(f'Accuracy: {r2 * 100:.2f}%')
+
