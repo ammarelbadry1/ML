@@ -22,7 +22,7 @@ y = dataset["RUL"]
 x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
 # SVR model
-model = SVR(kernel='rbf')
+model = SVR()
 
 # Fit the model
 model.fit(x_train, y_train)

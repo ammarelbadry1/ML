@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 data = pd.read_csv('Battery_RUL.csv')
 
 # Split the data into features and target variable
-X = data.drop('RUL', axis=1)
+X = data.drop('RUL', axis=1).drop('Cycle_Index', axis=1)
 y = data['RUL']
 
 # Split the data into training and testing sets
@@ -27,17 +27,9 @@ accuracy = model.score(X_test, y_test)
 print(f'Accuracy: {accuracy * 100:.2f}%')
 
 # Visualize the predictions and actual values
-plt.scatter(range(len(y_test)), y_test, 
-            c='b', 
-            label='Actual values')
-
-plt.scatter(range(len(y_pred)), y_pred, 
-            c='r', 
-            marker='x', 
-            label='Predicted values')
-
+plt.plot(y_test, y_test, color="blue")
+plt.scatter(y_test, y_pred, color="red", s=3)
 plt.xlabel('Data Points')
 plt.ylabel('Target Variable')
 plt.title('Actual vs Predicted Values')
-plt.legend()
 plt.show()
