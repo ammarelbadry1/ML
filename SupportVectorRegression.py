@@ -1,9 +1,8 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.svm import SVR
 from sklearn.metrics import r2_score
-from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 import os
 
 # Get the current working directory
@@ -16,56 +15,36 @@ file_path = os.path.join(current_directory, 'Battery_RUL.csv')
 dataset = pd.read_csv(file_path)
 
 # Define the features and target
-features = ['Cycle_Index', 'Discharge Time (s)', 'Decrement 3.6-3.4V (s)',
-            'Max. Voltage Dischar. (V)', 'Min. Voltage Charg. (V)',
-            'Time at 4.15V (s)', 'Time constant current (s)',
-            'Charging time (s)']
-target = 'RUL'
+X = dataset.drop("Cycle_Index", axis=1).drop("RUL", axis=1)
+y = dataset["RUL"]
 
-X = dataset[features].values
-y = dataset[target].values
-
-# Feature scaling
-sc_X = StandardScaler()
-sc_y = StandardScaler()
-X = sc_X.fit_transform(X)
-y = sc_y.fit_transform(y.reshape(-1, 1)).ravel()
+# Split the data
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
 # SVR model
-regressor = SVR(kernel='rbf')
+model = SVR(kernel='rbf')
 
 # Fit the model
-regressor.fit(X, y)
+model.fit(x_train, y_train)
 
 # Predictions using the original feature set
-y_pred_orig = regressor.predict(X)
+y_pred = model.predict(x_test)
 
 # Calculate R^2 score
-r2 = r2_score(y, y_pred_orig)
-
-print(f'Accuracy: {r2 * 100:.2f}%')
-
-# Predictions using entire scaled feature set
-X_pred = np.linspace(-2, 2, 1000).reshape(-1, len(features))
-y_pred = regressor.predict(X_pred)
-y_pred = sc_y.inverse_transform(y_pred.reshape(-1, 1))
-
-# Reshape X and y for plotting
-X_for_plot = sc_X.inverse_transform(X)
-y_for_plot = sc_y.inverse_transform(y.reshape(-1, 1)).ravel()
+r2 = r2_score(y_test, y_pred)
+print(f'R2 accuracy: {r2 * 100:.2f}%')
 
 
 # Plotting
-plt.scatter(X_for_plot[:, 0], y_for_plot, color='red', label='Data')
-plt.plot(sc_X.inverse_transform(X_pred)[:, 0], y_pred, color='blue', label='SVR model')
+plt.plot(y_test, y_test, color='blue')
+plt.scatter(y_test, y_pred, color='red')
 plt.title('Visulization of predictions & Actual values')
 plt.xlabel('Acual values')
 plt.ylabel('Predictions')
-plt.legend()
 plt.show()
 
 # Calculate the errors
-errors = y - y_pred_orig
+errors = y_test - y_pred
 
 # Plot the error distribution
 plt.hist(errors, bins=30)
