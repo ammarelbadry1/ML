@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.svm import SVR
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 import os
 
 # Get the current working directory
@@ -15,14 +16,20 @@ file_path = os.path.join(current_directory, 'Battery_RUL.csv')
 dataset = pd.read_csv(file_path)
 
 # Define the features and target
-X = dataset.drop("Cycle_Index", axis=1).drop("RUL", axis=1)
-y = dataset["RUL"]
-
+# X = dataset.drop("Cycle_Index", axis=1).drop("RUL", axis=1)
+# y = dataset["RUL"]
+X = dataset.iloc[:, 1:-1].values
+y = dataset.iloc[:, -1]
 # Split the data
-x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+
+scaler = StandardScaler()
+x_train = scaler.fit_transform(x_train)
+x_test = scaler.transform(x_test)
 
 # SVR model
-model = SVR()
+model = SVR(kernel='rbf', C=80)
 
 # Fit the model
 model.fit(x_train, y_train)
